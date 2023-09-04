@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  containers:
+    - image: grafana/grafana:latest
+      name: grafana
+      ports:
+        - containerPort: 3000
+      env:
+        # - name: GF_AUTH_ANONYMOUS_ENABLED
+        #   value: "true"
+        # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+        #   value: "Admin"
+        # - name: GF_AUTH_DISABLE_LOGIN_FORM
+        #   value: "true"
+        - name: GF_FEATURE_TOGGLES_ENABLE
+          value: "traceqlEditor"
+      volumeMounts:
+        - name: grafana-provisioning-datasources-volume
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: grafana-provisioning-dashboards-volume
+          mountPath: /etc/grafana/provisioning/dashboards
+  volumes:
+    - name: grafana-provisioning-datasources-volume
+      configMap:
+        name: grafana-provisioning-datasources
+    - name: grafana-provisioning-dashboards-volume
+      configMap:
+        name: grafana-provisioning-dashboards
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-svc
+spec:
+  type: LoadBalancer # just so we can see see it in localhost
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 3000

@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS StuffThanHappened (
+    Id SERIAL PRIMARY KEY,
+    What TEXT NOT NULL
+);

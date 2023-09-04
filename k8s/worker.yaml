@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: worker
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: dotnetmicroservicesobservabilitysample/worker:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          env:
+            - name: KafkaSettings__Topic
+              value: "stuff"
+            - name: KafkaSettings__BootstrapServers
+              value: "kafka-svc:9092"
+            - name: OpenTelemetrySettings__Endpoint
+              value: "http://otel-collector-svc:4317"
+            - name: ConnectionStrings__SqlConnectionString
+              value: "server=postgres-svc;port=5432;user id=user;password=pass;database=StuffDb"
+            - name:  OTEL_METRIC_EXPORT_INTERVAL
+              value: "15000" # 15s

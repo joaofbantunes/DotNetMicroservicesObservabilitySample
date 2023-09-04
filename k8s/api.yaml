@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: dotnetmicroservicesobservabilitysample/api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          env:
+            - name: KafkaSettings__Topic
+              value: "stuff"
+            - name: KafkaSettings__BootstrapServers
+              value: "kafka-svc:9092"
+            - name: OpenTelemetrySettings__Endpoint
+              value: "http://otel-collector-svc:4317"
+            - name:  OTEL_METRIC_EXPORT_INTERVAL
+              value: "15000" # 15s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 6001
+      targetPort: http

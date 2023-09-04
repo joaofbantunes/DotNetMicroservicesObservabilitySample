@@ -1,0 +1,36 @@
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/otel-collector-config.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+exporters:
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"    
+    tls:
+      insecure: true
+
+  otlp/tempo-traces:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+      
+  prometheusremotewrite:
+    endpoint: http://prometheus:9090/api/v1/write
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp/tempo-traces]
+    logs:
+      receivers: [otlp]
+      #processors: [attributes]
+      exporters: [loki]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheusremotewrite]
+# if we want to see more detailed logs, this is the way
+#  telemetry:
+#    logs:
+#      level: "debug"

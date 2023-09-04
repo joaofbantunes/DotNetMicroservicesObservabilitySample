@@ -1,0 +1,175 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./src/Api/Dockerfile
+    image: dotnetmicroservicesobservabilitysample/api:latest
+    container_name: api
+    ports:
+      - "6001:8080"
+    environment:
+      KafkaSettings__Topic: "stuff"
+      KafkaSettings__BootstrapServers: "broker:9092"
+      OpenTelemetrySettings__Endpoint: "http://otel-collector:4317"
+      OTEL_METRIC_EXPORT_INTERVAL: 15000 # 15 seconds
+    depends_on:
+      - broker
+    deploy:
+      resources:
+        reservations:
+            memory: 64M        
+        limits:
+          memory: 128M
+  worker:
+    build:
+      context: .
+      dockerfile: ./src/Worker/Dockerfile
+    image: dotnetmicroservicesobservabilitysample/worker:latest
+    container_name: worker
+    ports:
+      - "6002:8080"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=StuffDb"
+      KafkaSettings__Topic: "stuff"
+      KafkaSettings__BootstrapServers: "broker:9092"
+      OpenTelemetrySettings__Endpoint: "http://otel-collector:4317"
+      OTEL_METRIC_EXPORT_INTERVAL: 15000 # 15 seconds
+      Logging__LogLevel__Default: Debug
+    depends_on:
+      - postgres
+      - broker
+    deploy:
+      resources:
+        reservations:
+          memory: 64M
+        limits:
+          memory: 128M
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  broker:
+    image: confluentinc/cp-kafka:7.3.0
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: broker
+  
+  # https://raw.githubusercontent.com/tchiotludo/akhq/master/docker-compose.yml
+  akhq:
+    image: tchiotludo/akhq
+    hostname: akhq
+    container_name: akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            compose-services:
+              properties:
+                bootstrap.servers: "broker:9092"
+    ports:
+      - 9000:8080
+
+  postgres:
+    image: "postgres:alpine"
+    hostname: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_DB: "StuffDb"
+    volumes:
+      - ./compose/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  prometheus:
+    image: "prom/prometheus"
+    hostname: prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./compose/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    # to passe one flag, such as "--log.level=debug" or "--web.enable-remote-write-receiver", we need to override the whole command, as we can't just pass one extra argument
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      # need this for the OpenTelemetry collector to be able to put metrics into Prometheus
+      - "--web.enable-remote-write-receiver"
+    #   - "--log.level=debug"
+
+  grafana:
+    image: "grafana/grafana"
+    hostname: grafana
+    container_name: grafana
+    environment:
+      #      - GF_AUTH_ANONYMOUS_ENABLED=true
+      #      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      #      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./compose/grafana-provisioning:/etc/grafana/provisioning
+
+  tempo:
+    image: grafana/tempo
+    hostname: tempo
+    container_name: tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./compose/tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200"   # tempo
+      #- "4317"  # otlp grpc
+      #- "4318"  # otlp http
+  
+  # https://grafana.com/docs/opentelemetry/collector/send-logs-to-loki/
+  loki:
+    image: grafana/loki
+    hostname: loki
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./compose/loki-config.yaml:/etc/loki/local-config.yaml
+
+  otel-collector:
+    # using contrib so it includes the loki exporter and service graph exporter
+    #image: otel/opentelemetry-collector
+    image: otel/opentelemetry-collector-contrib
+    hostname: otel-collector
+    container_name: otel-collector
+    command: --config=/etc/otel-collector-config.yaml
+    volumes:
+      - ./compose/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      #- "8889:8889"   # Prometheus exporter metrics
+      - "4317:4317"   # OTLP gRPC receiver

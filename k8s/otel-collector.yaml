@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  otel-collector-config.yaml: |
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/otel-collector-config.yaml
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    exporters:
+      loki:
+        endpoint: "http://loki-svc:3100/loki/api/v1/push"    
+        tls:
+          insecure: true
+
+      otlp/tempo-traces:
+        endpoint: tempo-svc:4317
+        tls:
+          insecure: true
+          
+      prometheusremotewrite:
+        endpoint: http://prometheus-svc:9090/api/v1/write
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [otlp/tempo-traces]
+        logs:
+          receivers: [otlp]
+          exporters: [loki]
+        metrics:
+          receivers: [otlp]
+          exporters: [prometheusremotewrite]
+      telemetry:
+        logs:
+          level: "debug"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-collector-daemonset
+  labels:
+    app: otel-collector
+spec:
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+      - image: otel/opentelemetry-collector-contrib:0.82.0
+        name: otel-collector
+        args: ["--config=/config/otel-collector-config.yaml"]
+        ports:
+          - containerPort: 4317
+            name: otlp-grpc
+        volumeMounts:
+          - name: otel-collector-config-volume
+            mountPath: /config
+      volumes:
+      - name: otel-collector-config-volume
+        configMap:
+          name: otel-collector-config
+---
+# TODO: ideally, should be a daemonset
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector-svc
+spec:
+  selector:
+    app: otel-collector
+  ports:
+    - protocol: TCP
+      port: 4317
+      targetPort: otlp-grpc

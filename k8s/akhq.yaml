@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: akhq-config
+data:
+  akhq-config.yaml: |
+    akhq:
+      connections:
+        compose-services:
+          properties:
+            bootstrap.servers: "kafka-svc:9092"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: akhq
+  name: akhq
+spec:
+  containers:
+    - image: tchiotludo/akhq:latest
+      name: akhq
+      ports:
+        - containerPort: 8080
+      env:
+        - name: AKHQ_CONFIGURATION
+          valueFrom:
+            configMapKeyRef:
+              name: akhq-config
+              key: akhq-config.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: akhq-svc
+spec:
+  type: LoadBalancer # just so we can see see it in localhost
+  selector:
+    app: akhq
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 8080
