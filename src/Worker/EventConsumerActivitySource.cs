@@ -11,7 +11,6 @@ public class EventConsumerActivitySource
 {
     private const string Name = "event handle";
     private const ActivityKind Kind = ActivityKind.Consumer;
-    private const string ServerTag = "server";
     private const string EventTopicTag = "event.topic";
     private const string EventIdTag = "event.id";
     private const string EventTypeTag = "event.type";
@@ -48,7 +47,6 @@ public class EventConsumerActivitySource
             parentContext.ActivityContext,
             tags: new KeyValuePair<string, object?>[]
             {
-                new(ServerTag, Environment.MachineName),
                 new(EventTopicTag, topic),
                 new(EventIdTag, @event.Id),
                 new(EventTypeTag, @event.GetType().Name),

@@ -11,7 +11,6 @@ public static class EventPublisherActivitySource
 {
     private const string Name = "event publish";
     private const ActivityKind Kind = ActivityKind.Producer;
-    private const string ServerTag = "server";
     private const string EventTopicTag = "event.topic";
     private const string EventIdTag = "event.id";
     private const string EventTypeTag = "event.type";
@@ -29,12 +28,15 @@ public static class EventPublisherActivitySource
         }
 
         // ReSharper disable once ExplicitCallerInfoArgument
-        var activity = ActivitySource.StartActivity(Name, Kind);
-        activity?.SetTag(ServerTag, Environment.MachineName);
-        activity?.SetTag(EventTopicTag, topic);
-        activity?.SetTag(EventIdTag, @event.Id);
-        activity?.SetTag(EventTypeTag, @event.GetType().Name);
-        return activity;
+        return ActivitySource.StartActivity(
+            name: Name,
+            kind: Kind,
+            tags: new KeyValuePair<string, object?>[]
+            {
+                new (EventTopicTag, topic),
+                new (EventIdTag, @event.Id),
+                new (EventTypeTag, @event.GetType().Name),
+            });
     }
 
     public static Headers EnrichHeadersWithTracingContext(Activity? activity, Headers headers)
