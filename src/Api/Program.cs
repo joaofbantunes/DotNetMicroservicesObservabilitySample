@@ -98,7 +98,7 @@ builder.Services
             // .AddHttpClientInstrumentation() // we're not using, but important to know it exists
             
             // be careful, metric names are still being adjusted, as we're using a preview version of .NET 8
-            .AddView("http-server-request-duration", new ExplicitBucketHistogramConfiguration
+            .AddView("http.server.request.duration", new ExplicitBucketHistogramConfiguration
             {
                 Boundaries = new double[] { 0, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10 }
             })
