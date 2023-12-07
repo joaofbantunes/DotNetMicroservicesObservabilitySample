@@ -54,13 +54,7 @@ builder.Services.TryAddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<EventConsumerMetrics>();
 builder.Services.AddHostedService<EventConsumer>();
 builder.Services.AddSingleton(builder.Configuration.GetSection(nameof(KafkaSettings)).Get<KafkaSettings>());
-builder.Services
-    .AddSingleton<SqlConnectionFactory>(s =>
-    {
-        var config = s.GetRequiredService<IConfiguration>();
-        var connectionString = config.GetConnectionString("SqlConnectionString");
-        return () => new NpgsqlConnection(connectionString);
-    });
+builder.Services.AddNpgsqlSlimDataSource(builder.Configuration.GetConnectionString("SqlConnectionString")!);
 
 builder.Services
     .AddOpenTelemetry()

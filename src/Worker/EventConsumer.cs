@@ -1,5 +1,6 @@
 using Confluent.Kafka;
 using Dapper;
+using Npgsql;
 using Shared;
 
 namespace Worker;
@@ -7,18 +8,18 @@ namespace Worker;
 public class EventConsumer : BackgroundService
 {
     private readonly KafkaSettings _kafkaSettings;
-    private readonly SqlConnectionFactory _sqlConnectionFactory;
+    private readonly NpgsqlDataSource _dataSource;
     private readonly EventConsumerMetrics _metrics;
     private readonly ILogger<EventConsumer> _logger;
 
     public EventConsumer(
         KafkaSettings kafkaSettings,
-        SqlConnectionFactory sqlConnectionFactory,
+        NpgsqlDataSource dataSource,
         EventConsumerMetrics metrics,
         ILogger<EventConsumer> logger)
     {
         _kafkaSettings = kafkaSettings;
-        _sqlConnectionFactory = sqlConnectionFactory;
+        _dataSource = dataSource;
         _metrics = metrics;
         _logger = logger;
     }
@@ -98,7 +99,7 @@ public class EventConsumer : BackgroundService
     {
         _logger.LogInformation("\"{@What}\" happened!", @event.What);
 
-        await using var connection = _sqlConnectionFactory();
+        await using var connection = _dataSource.CreateConnection();
         await connection.ExecuteAsync(
             "INSERT INTO StuffThanHappened(What) VALUES(@what)",
             new { what = @event.What });
