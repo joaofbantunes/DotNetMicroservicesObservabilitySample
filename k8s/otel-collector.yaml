@@ -56,7 +56,7 @@ spec:
         app: otel-collector
     spec:
       containers:
-      - image: otel/opentelemetry-collector-contrib:0.82.0
+      - image: otel/opentelemetry-collector-contrib:0.96.0
         name: otel-collector
         args: ["--config=/config/otel-collector-config.yaml"]
         ports:

@@ -193,7 +193,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum(max_over_time(http_server_request_duration_count{job=\"Api\"}[$__interval]))",
+              "expr": "sum(max_over_time(http_server_request_duration_seconds_count{job=\"Api\"}[$__interval]))",
               "hide": false,
               "instant": false,
               "legendFormat": "Total requests",
@@ -301,7 +301,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum(irate(http_server_request_duration_count{job=\"Api\"}[$__rate_interval]))",
+              "expr": "sum(irate(http_server_request_duration_seconds_count{job=\"Api\"}[$__rate_interval]))",
               "hide": false,
               "legendFormat": "Requests per second",
               "range": true,
@@ -395,7 +395,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.99, sum(rate(http_server_request_duration_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
+              "expr": "histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "99 percentile",
@@ -408,7 +408,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum(rate(http_server_request_duration_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
+              "expr": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "95 percentile",
@@ -421,7 +421,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.9, sum(rate(http_server_request_duration_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
+              "expr": "histogram_quantile(0.9, sum(rate(http_server_request_duration_seconds_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "90 percentile",
@@ -434,7 +434,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.5, sum(rate(http_server_request_duration_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
+              "expr": "histogram_quantile(0.5, sum(rate(http_server_request_duration_seconds_bucket{job=\"Api\"}[$__rate_interval])) by (le))",
               "hide": false,
               "instant": false,
               "legendFormat": "0.5 percentile (average)",
@@ -530,7 +530,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "max_over_time(http_server_request_duration_count{job=\"Api\"}[$__interval])",
+              "expr": "max_over_time(http_server_request_duration_seconds_count{job=\"Api\"}[$__interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "Total requests for instance {{instance}}",
@@ -638,7 +638,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(http_server_request_duration_count{job=\"Api\"}[$__rate_interval])",
+              "expr": "irate(http_server_request_duration_seconds_count{job=\"Api\"}[$__rate_interval])",
               "hide": false,
               "legendFormat": "Requests per second for instance {{instance}}",
               "range": true,
@@ -841,7 +841,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "process_runtime_dotnet_gc_heap_size{job=\"Api\"}",
+              "expr": "process_runtime_dotnet_gc_heap_size_bytes{job=\"Api\"}",
               "hide": false,
               "interval": "",
               "legendFormat": "{{generation}} size {{instance}}",
@@ -936,7 +936,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size{job=\"Api\"})",
+              "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size_bytes{job=\"Api\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "GC heap size {{instance}}",
@@ -949,7 +949,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "process_memory_usage{job=\"Api\"}",
+              "expr": "process_memory_usage_bytes{job=\"Api\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Memory usage {{instance}}",
@@ -1061,7 +1061,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "rate(process_cpu_time{job=\"Api\"}[$__rate_interval])",
+              "expr": "rate(process_cpu_time_seconds_total{job=\"Api\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "Cpu usage {{state}} {{instance}}",
@@ -1074,7 +1074,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(state) (rate(process_cpu_time{job=\"Api\"}[$__rate_interval]))",
+              "expr": "sum without(state) (rate(process_cpu_time_seconds_total{job=\"Api\"}[$__rate_interval]))",
               "hide": false,
               "instant": false,
               "legendFormat": "Cpu usage {{instance}}",
@@ -1169,7 +1169,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(process_runtime_dotnet_gc_allocations_size{job=\"Api\"}[$__rate_interval])",
+              "expr": "irate(process_runtime_dotnet_gc_allocations_size_bytes_total{job=\"Api\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "Allocations per second {{instance}}",
@@ -1263,7 +1263,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(process_runtime_dotnet_gc_collections_count{job=\"Api\"}[$__rate_interval])",
+              "expr": "irate(process_runtime_dotnet_gc_collections_count_total{job=\"Api\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "GC per second {{generation}} {{instance}}",
@@ -1276,7 +1276,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count{job=\"Api\"}[$__rate_interval]))",
+              "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count_total{job=\"Api\"}[$__rate_interval]))",
               "hide": false,
               "instant": false,
               "legendFormat": "GC per second {{instance}}",
@@ -1387,7 +1387,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "builder",
-              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Api\"}",
+              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Api\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Heap fragmentation {{generation}} {{instance}}",
@@ -1513,7 +1513,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Api\"} / process_runtime_dotnet_gc_heap_size{job=\"Api\"}",
+              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Api\"} / process_runtime_dotnet_gc_heap_size_bytes{job=\"Api\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Heap fragmentation % {{generation}} {{instance}}",
@@ -1698,7 +1698,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum(kafka_consumer_event_duration_count{job=\"Worker\"})",
+              "expr": "sum(kafka_consumer_event_duration_seconds_count{job=\"Worker\"})",
               "hide": false,
               "legendFormat": "Total events",
               "range": true,
@@ -1793,7 +1793,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum(irate(kafka_consumer_event_duration_count{job=\"Worker\"}[$__rate_interval]))",
+              "expr": "sum(irate(kafka_consumer_event_duration_seconds_count{job=\"Worker\"}[$__rate_interval]))",
               "hide": false,
               "legendFormat": "Events per second",
               "range": true,
@@ -1888,7 +1888,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.99, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+              "expr": "histogram_quantile(0.99, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
               "hide": false,
               "legendFormat": "99 percentile",
               "range": true,
@@ -1900,7 +1900,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.95, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+              "expr": "histogram_quantile(0.95, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
               "legendFormat": "95 percentile",
               "range": true,
               "refId": "A"
@@ -1911,7 +1911,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.9, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+              "expr": "histogram_quantile(0.9, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
               "hide": false,
               "legendFormat": "90 percentile",
               "range": true,
@@ -1923,7 +1923,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(0.5, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+              "expr": "histogram_quantile(0.5, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
               "hide": false,
               "legendFormat": "50 percentile (average)",
               "range": true,
@@ -2032,7 +2032,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "kafka_consumer_event_duration_count{job=\"Worker\"}",
+              "expr": "kafka_consumer_event_duration_seconds_count{job=\"Worker\"}",
               "hide": false,
               "legendFormat": "Total events {{instance}}",
               "range": true,
@@ -2127,7 +2127,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(kafka_consumer_event_duration_count{job=\"Worker\"}[$__rate_interval])",
+              "expr": "irate(kafka_consumer_event_duration_seconds_count{job=\"Worker\"}[$__rate_interval])",
               "hide": false,
               "legendFormat": "Events per second {{instance}}",
               "range": true,
@@ -2329,7 +2329,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(db_client_commands_duration_count{job=\"Worker\"})",
+              "expr": "sum(db_client_commands_duration_seconds_count{job=\"Worker\"})",
               "instant": false,
               "legendFormat": "Total db commands",
               "range": true,
@@ -2437,7 +2437,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(db_client_commands_duration_count{job=\"Worker\"}[$__rate_interval])",
+              "expr": "irate(db_client_commands_duration_seconds_count{job=\"Worker\"}[$__rate_interval])",
               "hide": false,
               "legendFormat": "Commands per second {{instance}}",
               "range": true,
@@ -2549,7 +2549,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "rate(process_cpu_time{job=\"Worker\"}[$__rate_interval])",
+              "expr": "rate(process_cpu_time_seconds_total{job=\"Worker\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "Cpu usage {{state}} {{instance}}",
@@ -2562,7 +2562,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(state) (rate(process_cpu_time{job=\"Worker\"}[$__rate_interval]))",
+              "expr": "sum without(state) (rate(process_cpu_time_seconds_total{job=\"Worker\"}[$__rate_interval]))",
               "hide": false,
               "instant": false,
               "legendFormat": "Cpu usage {{instance}}",
@@ -2663,7 +2663,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "process_runtime_dotnet_gc_heap_size{job=\"Worker\"}",
+              "expr": "process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"}",
               "hide": false,
               "interval": "",
               "legendFormat": "{{generation}} size {{instance}}",
@@ -2758,7 +2758,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(process_runtime_dotnet_gc_collections_count{job=\"Worker\"}[$__rate_interval])",
+              "expr": "irate(process_runtime_dotnet_gc_collections_count_total{job=\"Worker\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "GC per second {{generation}} {{instance}}",
@@ -2771,7 +2771,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count{job=\"Worker\"}[$__rate_interval]))",
+              "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count_total{job=\"Worker\"}[$__rate_interval]))",
               "hide": false,
               "instant": false,
               "legendFormat": "GC per second {{instance}}",
@@ -2867,7 +2867,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size{job=\"Worker\"})",
+              "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"})",
               "hide": false,
               "instant": false,
               "legendFormat": "GC heap size {{instance}}",
@@ -2880,7 +2880,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "process_memory_usage{job=\"Worker\"}",
+              "expr": "process_memory_usage_bytes{job=\"Worker\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Memory usage {{instance}}",
@@ -2976,7 +2976,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "irate(process_runtime_dotnet_gc_allocations_size{job=\"Worker\"}[$__rate_interval])",
+              "expr": "irate(process_runtime_dotnet_gc_allocations_size_bytes_total{job=\"Worker\"}[$__rate_interval])",
               "hide": false,
               "instant": false,
               "legendFormat": "Allocations per second {{instance}}",
@@ -3103,7 +3103,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Worker\"}",
+              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Worker\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Heap fragmentation {{generation}} {{instance}}",
@@ -3230,7 +3230,7 @@ data:
                 "uid": "prometheus-uid"
               },
               "editorMode": "code",
-              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Worker\"} / process_runtime_dotnet_gc_heap_size{job=\"Worker\"}",
+              "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Worker\"} / process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"}",
               "hide": false,
               "instant": false,
               "legendFormat": "Heap fragmentation % {{generation}} {{instance}}",

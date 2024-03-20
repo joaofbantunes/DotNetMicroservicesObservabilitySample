@@ -58,7 +58,7 @@ public static class EventPublisherActivitySource
             new PropagationContext(contextToInject, Baggage.Current),
             headers,
             InjectTraceContext);
-
+        
         return headers;
 
         static void InjectTraceContext(Headers headers, string key, string value)

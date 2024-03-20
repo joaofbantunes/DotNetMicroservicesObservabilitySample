@@ -164,7 +164,7 @@ services:
   otel-collector:
     # using contrib so it includes the loki exporter and service graph exporter
     #image: otel/opentelemetry-collector
-    image: otel/opentelemetry-collector-contrib
+    image: otel/opentelemetry-collector-contrib:0.96.0
     hostname: otel-collector
     container_name: otel-collector
     command: --config=/etc/otel-collector-config.yaml

@@ -126,7 +126,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_consumer_event_duration_count{job=\"Worker\"})",
+          "expr": "sum(kafka_consumer_event_duration_seconds_count{job=\"Worker\"})",
           "hide": false,
           "legendFormat": "Total events",
           "range": true,
@@ -221,7 +221,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "sum(irate(kafka_consumer_event_duration_count{job=\"Worker\"}[$__rate_interval]))",
+          "expr": "sum(irate(kafka_consumer_event_duration_seconds_count{job=\"Worker\"}[$__rate_interval]))",
           "hide": false,
           "legendFormat": "Events per second",
           "range": true,
@@ -316,7 +316,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.99, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
           "hide": false,
           "legendFormat": "99 percentile",
           "range": true,
@@ -328,7 +328,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
           "legendFormat": "95 percentile",
           "range": true,
           "refId": "A"
@@ -339,7 +339,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.9, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.9, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
           "hide": false,
           "legendFormat": "90 percentile",
           "range": true,
@@ -351,7 +351,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.5, sum by(le) (rate(kafka_consumer_event_duration_bucket{job=\"Worker\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.5, sum by(le) (rate(kafka_consumer_event_duration_seconds_bucket{job=\"Worker\"}[$__rate_interval])))",
           "hide": false,
           "legendFormat": "50 percentile (average)",
           "range": true,
@@ -460,7 +460,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "kafka_consumer_event_duration_count{job=\"Worker\"}",
+          "expr": "kafka_consumer_event_duration_seconds_count{job=\"Worker\"}",
           "hide": false,
           "legendFormat": "Total events {{instance}}",
           "range": true,
@@ -555,7 +555,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "irate(kafka_consumer_event_duration_count{job=\"Worker\"}[$__rate_interval])",
+          "expr": "irate(kafka_consumer_event_duration_seconds_count{job=\"Worker\"}[$__rate_interval])",
           "hide": false,
           "legendFormat": "Events per second {{instance}}",
           "range": true,
@@ -757,7 +757,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(db_client_commands_duration_count{job=\"Worker\"})",
+          "expr": "sum(db_client_commands_duration_seconds_count{job=\"Worker\"})",
           "instant": false,
           "legendFormat": "Total db commands",
           "range": true,
@@ -865,7 +865,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "irate(db_client_commands_duration_count{job=\"Worker\"}[$__rate_interval])",
+          "expr": "irate(db_client_commands_duration_seconds_count{job=\"Worker\"}[$__rate_interval])",
           "hide": false,
           "legendFormat": "Commands per second {{instance}}",
           "range": true,
@@ -977,7 +977,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "rate(process_cpu_time{job=\"Worker\"}[$__rate_interval])",
+          "expr": "rate(process_cpu_time_seconds_total{job=\"Worker\"}[$__rate_interval])",
           "hide": false,
           "instant": false,
           "legendFormat": "Cpu usage {{state}} {{instance}}",
@@ -990,7 +990,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "sum without(state) (rate(process_cpu_time{job=\"Worker\"}[$__rate_interval]))",
+          "expr": "sum without(state) (rate(process_cpu_time_seconds_total{job=\"Worker\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Cpu usage {{instance}}",
@@ -1091,7 +1091,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "process_runtime_dotnet_gc_heap_size{job=\"Worker\"}",
+          "expr": "process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{generation}} size {{instance}}",
@@ -1186,7 +1186,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "irate(process_runtime_dotnet_gc_collections_count{job=\"Worker\"}[$__rate_interval])",
+          "expr": "irate(process_runtime_dotnet_gc_collections_count_total{job=\"Worker\"}[$__rate_interval])",
           "hide": false,
           "instant": false,
           "legendFormat": "GC per second {{generation}} {{instance}}",
@@ -1199,7 +1199,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count{job=\"Worker\"}[$__rate_interval]))",
+          "expr": "sum without(generation) (irate(process_runtime_dotnet_gc_collections_count_total{job=\"Worker\"}[$__rate_interval]))",
           "hide": false,
           "instant": false,
           "legendFormat": "GC per second {{instance}}",
@@ -1295,7 +1295,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size{job=\"Worker\"})",
+          "expr": "sum without(generation) (process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "GC heap size {{instance}}",
@@ -1308,7 +1308,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "process_memory_usage{job=\"Worker\"}",
+          "expr": "process_memory_usage_bytes{job=\"Worker\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "Memory usage {{instance}}",
@@ -1404,7 +1404,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "irate(process_runtime_dotnet_gc_allocations_size{job=\"Worker\"}[$__rate_interval])",
+          "expr": "irate(process_runtime_dotnet_gc_allocations_size_bytes_total{job=\"Worker\"}[$__rate_interval])",
           "hide": false,
           "instant": false,
           "legendFormat": "Allocations per second {{instance}}",
@@ -1531,7 +1531,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Worker\"}",
+          "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Worker\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "Heap fragmentation {{generation}} {{instance}}",
@@ -1658,7 +1658,7 @@
             "uid": "prometheus-uid"
           },
           "editorMode": "code",
-          "expr": "process_runtime_dotnet_gc_heap_fragmentation_size{job=\"Worker\"} / process_runtime_dotnet_gc_heap_size{job=\"Worker\"}",
+          "expr": "process_runtime_dotnet_gc_heap_fragmentation_size_bytes{job=\"Worker\"} / process_runtime_dotnet_gc_heap_size_bytes{job=\"Worker\"}",
           "hide": false,
           "instant": false,
           "legendFormat": "Heap fragmentation % {{generation}} {{instance}}",
